@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using FitnessTracker.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -11,11 +10,6 @@ namespace FitnessTracker.Api.Controllers
     [Route("api/[controller]")]
     public class ActivitesController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
         private readonly ILogger<ActivitesController> _logger;
 
         public ActivitesController(ILogger<ActivitesController> logger)
@@ -24,9 +18,17 @@ namespace FitnessTracker.Api.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Activties> Get()
+        public IEnumerable<Activity> Get()
         {
-            // some stuff
+            return new List<Activity>()
+            {
+                new Activity
+                {
+                    Date = new DateTime(),
+                    Type = ActivityType.Running,
+                    Comments = "lovely"
+                }
+            };
         }
     }
 }
