@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FitnessTracker.Api.Models;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -11,7 +12,7 @@ namespace FitnessTracker.Api.Controllers
     public class ActivitesController : ControllerBase
     {
         private readonly ILogger<ActivitesController> _logger;
-
+       
         public ActivitesController(ILogger<ActivitesController> logger)
         {
             _logger = logger;

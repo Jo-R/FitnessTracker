@@ -1,20 +1,18 @@
-﻿using System;
+﻿using FitnessTracker.Data.Models.Responses.Users;
+using MediatR;
+using System;
 
-namespace FitnessTracker.Data.Models
+namespace FitnessTracker.Data.Models.Requests.Users
 {
-    public class User
+    public class CreateUserRequest: IRequest<UserSummaryResponse>
     {
-        public Guid Id { get; set; }
-
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
+
         public DateTime DateOfBirth { get; set; }
 
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
-
-        public string UserProfile { get; set; }
-
     }
 }

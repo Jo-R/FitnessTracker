@@ -1,8 +1,5 @@
 ﻿using FitnessTracker.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FitnessTracker.Data
 {
@@ -21,7 +18,11 @@ namespace FitnessTracker.Data
         {
             modelBuilder.Entity<User>().ToTable("User");
             modelBuilder.Entity<Activity>().ToTable("Activity");
-                       
+
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
         }
     }
 }

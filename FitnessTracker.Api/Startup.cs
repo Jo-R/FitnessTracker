@@ -12,6 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using MediatR;
+using FitnessTracker.Data.Models.Requests.Users;
 
 namespace FitnessTracker.Api
 {
@@ -30,6 +32,7 @@ namespace FitnessTracker.Api
             services.AddControllers();
             services.AddDbContext<FitnessTrackerContext>(options =>
                  options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddMediatR(typeof(CreateUserRequest));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
