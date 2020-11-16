@@ -16,12 +16,11 @@ namespace FitnessTracker.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().ToTable("User");
-            modelBuilder.Entity<Activity>().ToTable("Activity");
-
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<User>().ToTable("User")
                 .HasIndex(u => u.Email)
-                .IsUnique();
+                .IsUnique(); 
+            modelBuilder.Entity<Activity>().ToTable("Activity");
+               
 
         }
     }

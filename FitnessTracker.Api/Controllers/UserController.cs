@@ -3,7 +3,6 @@ using FitnessTracker.Data.Models.Responses.Users;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace FitnessTracker.Api.Controllers
@@ -12,14 +11,19 @@ namespace FitnessTracker.Api.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly ILogger<UserController> _logger;
         private readonly IMediator _mediator;
 
-        public UserController(ILogger<UserController> logger, IMediator mediator)
+        public UserController(IMediator mediator)
         {
-            _logger = logger;
             _mediator = mediator;
         }
+
+        // GET by id
+        // GET by email
+        // DELETE by id
+        // PATCH profile
+
+        // TODO swagger
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -28,10 +32,15 @@ namespace FitnessTracker.Api.Controllers
         {
             if (request == null)
             {
-                return BadRequest();
+                return BadRequest("The request cannot be null");
             }
-            // TODO other validation for request
+            
             var response = await _mediator.Send(request);
+
+            if (response == null)
+            {
+                return BadRequest("The user could not be created"); 
+            }
 
             return Ok(response);
 

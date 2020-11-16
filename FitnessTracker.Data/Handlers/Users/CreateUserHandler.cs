@@ -3,30 +3,34 @@ using FitnessTracker.Data.Models.Responses.Users;
 using FitnessTracker.Data.Models;
 using MediatR;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace FitnessTracker.Data.Handlers.Users
 {
     public class CreateUserHandler : IRequestHandler<CreateUserRequest, UserSummaryResponse>
     {
         private readonly FitnessTrackerContext _ctx;
+        private readonly ILogger<CreateUserHandler> _logger;
 
-        public CreateUserHandler(FitnessTrackerContext ctx)
+        public CreateUserHandler(FitnessTrackerContext ctx, ILogger<CreateUserHandler> logger)
         {
             _ctx = ctx;
+            _logger = logger;
         }
-        public async Task<UserSummaryResponse> Handle(CreateUserRequest request, CancellationToken cancellationToken)
-        {
-            // TODO ?validation - CHEK EMAIL NOT ALREADY IN USE
-            // TODO error return values?
-            // TODO ?automapper
-
-            using (_ctx)
+        public Task<UserSummaryResponse> Handle(CreateUserRequest request, CancellationToken cancellationToken)
+        {            
+            try
             {
+                // can only have one user with an email address, enforced by db but fail fast here...
+                var existingUser = _ctx.Users.FirstOrDefault(x => x.Email == request.Email);
+                if (existingUser != null)
+                {
+                    // TODO probably improve what return for failures
+                    return Task.FromResult<UserSummaryResponse>(null);
+                }
                 var user = new User
                 {
                     FirstName = request.FirstName,
@@ -35,10 +39,16 @@ namespace FitnessTracker.Data.Handlers.Users
                     Email = request.Email,
                     PhoneNumber = request.PhoneNumber
                 };
-                await _ctx.Users.AddAsync(user);
-                await _ctx.SaveChangesAsync();
+                _ctx.Users.Add(user);
+                _ctx.SaveChanges();
 
-                var createdUser =  _ctx.Users.FirstOrDefault(x => x.Email == request.Email);
+                var createdUser = _ctx.Users.FirstOrDefault(x => x.Email == request.Email);
+
+                if (createdUser == null)
+                {
+                    _logger.LogError("user not found after creation");
+                    return Task.FromResult<UserSummaryResponse>(null); ;
+                }
 
                 var response = new UserSummaryResponse
                 {
@@ -47,7 +57,12 @@ namespace FitnessTracker.Data.Handlers.Users
                     LastName = createdUser.LastName
                 };
 
-                return response;
+                return Task.FromResult(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error creating user", ex);
+                return Task.FromResult<UserSummaryResponse>(null); ;
             }
 
         }
