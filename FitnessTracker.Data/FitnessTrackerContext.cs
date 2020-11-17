@@ -12,14 +12,14 @@ namespace FitnessTracker.Data
 
         public DbSet<User> Users { get; set; }
 
-        public DbSet<Activity> Activities { get; set; }
+        public DbSet<RunActivity> RunActivities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().ToTable("User")
                 .HasIndex(u => u.Email)
                 .IsUnique(); 
-            modelBuilder.Entity<Activity>().ToTable("Activity");
+            modelBuilder.Entity<RunActivity>().ToTable("RunActivity");
                
 
         }

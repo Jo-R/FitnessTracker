@@ -1,19 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using FitnessTracker.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using MediatR;
-using FitnessTracker.Data.Models.Requests.Users;
+using FitnessTracker.Data.Handlers.Users;
 
 namespace FitnessTracker.Api
 {
@@ -34,7 +27,8 @@ namespace FitnessTracker.Api
             services.AddControllers();
             services.AddDbContext<FitnessTrackerContext>(options =>
                  options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddMediatR(typeof(CreateUserRequest));
+            // load the assembley where the mediatr handlers live so they get registered with container
+            services.AddMediatR(typeof(CreateUserHandler).Assembly);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

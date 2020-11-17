@@ -85,7 +85,7 @@ namespace FitnessTracker.Api.Controllers
 
         [HttpPatch("user-profile")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserSummaryResponse))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponse))]
         public async Task<IActionResult> PatchUserProfile(PatchUserProfileRequest request)
         {
             if (request == null || string.IsNullOrWhiteSpace(request.ProfileContent))
