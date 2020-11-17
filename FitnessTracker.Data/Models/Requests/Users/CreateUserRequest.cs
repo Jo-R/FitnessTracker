@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FitnessTracker.Data.Models.Requests.Users
 {
-    public class CreateUserRequest: IRequest<UserSummaryResponse>
+    public class CreateUserRequest: IRequest<UserResponse>
     {
         [Required]
         public string FirstName { get; set; }

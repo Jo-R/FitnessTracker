@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FitnessTracker.Data.Handlers.Users
 {
-    public class CreateUserHandler : IRequestHandler<CreateUserRequest, UserSummaryResponse>
+    public class CreateUserHandler : IRequestHandler<CreateUserRequest, UserResponse>
     {
         private readonly FitnessTrackerContext _ctx;
         private readonly ILogger<CreateUserHandler> _logger;
@@ -20,16 +20,17 @@ namespace FitnessTracker.Data.Handlers.Users
             _ctx = ctx;
             _logger = logger;
         }
-        public Task<UserSummaryResponse> Handle(CreateUserRequest request, CancellationToken cancellationToken)
+        public Task<UserResponse> Handle(CreateUserRequest request, CancellationToken cancellationToken)
         {            
             try
             {
                 // can only have one user with an email address, enforced by db but fail fast here...
+                // TODO is this the right place to do this?
                 var existingUser = _ctx.Users.FirstOrDefault(x => x.Email == request.Email);
                 if (existingUser != null)
                 {
-                    // TODO probably improve what return for failures
-                    return Task.FromResult<UserSummaryResponse>(null);
+                    // TODO is this the right thing to be returning for failures?
+                    return Task.FromResult<UserResponse>(null);
                 }
                 var user = new User
                 {
@@ -47,14 +48,18 @@ namespace FitnessTracker.Data.Handlers.Users
                 if (createdUser == null)
                 {
                     _logger.LogError("user not found after creation");
-                    return Task.FromResult<UserSummaryResponse>(null); ;
+                    return Task.FromResult<UserResponse>(null); 
                 }
 
-                var response = new UserSummaryResponse
+                var response = new UserResponse
                 {
-                    Id = createdUser.Id,
-                    FirstName = createdUser.FirstName,
-                    LastName = createdUser.LastName
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    DateOfBirth = user.DateOfBirth,
+                    PhoneNumber = user.PhoneNumber,
+                    UserProfile = user.UserProfile
                 };
 
                 return Task.FromResult(response);
@@ -62,7 +67,7 @@ namespace FitnessTracker.Data.Handlers.Users
             catch (Exception ex)
             {
                 _logger.LogError("Error creating user", ex);
-                return Task.FromResult<UserSummaryResponse>(null); ;
+                return Task.FromResult<UserResponse>(null);
             }
 
         }

@@ -17,6 +17,8 @@ using FitnessTracker.Data.Models.Requests.Users;
 
 namespace FitnessTracker.Api
 {
+
+    // TODO swagger
     public class Startup
     {
         public Startup(IConfiguration configuration)
