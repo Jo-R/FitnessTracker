@@ -9,6 +9,7 @@ namespace FitnessTracker.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    // TODO chagne the guid to incrementing ints on user and activity
     // TODO get all activities (paged - maybe a summary?)
     // TODO get activity by id
     // TODO add activity

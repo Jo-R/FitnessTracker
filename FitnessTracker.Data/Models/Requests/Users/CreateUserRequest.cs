@@ -1,11 +1,12 @@
-﻿using FitnessTracker.Data.Models.Responses.Users;
+﻿using FitnessTracker.Data.Models.Responses;
+using FitnessTracker.Data.Models.Responses.Users;
 using MediatR;
 using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace FitnessTracker.Data.Models.Requests.Users
 {
-    public class CreateUserRequest: IRequest<UserResponse>
+    public class CreateUserRequest: IRequest<RequestResult<UserResponse>>
     {
         [Required]
         public string FirstName { get; set; }

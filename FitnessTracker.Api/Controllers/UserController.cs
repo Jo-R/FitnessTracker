@@ -34,12 +34,12 @@ namespace FitnessTracker.Api.Controllers
 
             var response = await _mediator.Send(new UserByIdQuery { Id = id });
 
-            if (response == null)
+            if (response.IsSuccess)
             {
-                return NotFound();
+                return Ok(response.Obj);
             }
 
-            return Ok(response);
+            return NotFound();
         }
 
         [HttpGet("email/{email}")]
@@ -55,12 +55,12 @@ namespace FitnessTracker.Api.Controllers
 
             var response = await _mediator.Send(new UserByEmailQuery { Email = email });
 
-            if (response == null)
+            if (response.IsSuccess)
             {
-                return NotFound();
+                return Ok(response.Obj);
             }
 
-            return Ok(response);
+            return NotFound();
         }
         
         [HttpPost]
@@ -75,12 +75,13 @@ namespace FitnessTracker.Api.Controllers
             
             var response = await _mediator.Send(request);
 
-            if (response == null)
+            if (response.IsSuccess)
             {
-                return BadRequest("The user could not be created"); 
+                return Ok(response.Obj);
             }
 
-            return Ok(response);
+            return BadRequest("The user could not be created");
+           
         }
 
         [HttpPatch("user-profile")]
@@ -95,12 +96,13 @@ namespace FitnessTracker.Api.Controllers
 
             var response = await _mediator.Send(request);
 
-            if (response == null)
+            if (response.IsSuccess)
             {
-                return BadRequest("The user's profile could not be updated");
+                return Ok(response.Obj);
             }
 
-            return Ok(response);
+            return BadRequest("The user's profile could not be updated");
+           
         }
     }
 }

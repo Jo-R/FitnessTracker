@@ -7,10 +7,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using FitnessTracker.Data.Models.Responses;
 
 namespace FitnessTracker.Data.Handlers.Users
 {
-    public class CreateUserHandler : IRequestHandler<CreateUserRequest, UserResponse>
+    public class CreateUserHandler : IRequestHandler<CreateUserRequest, RequestResult<UserResponse>>
     {
         private readonly FitnessTrackerContext _ctx;
         private readonly ILogger<CreateUserHandler> _logger;
@@ -20,7 +21,7 @@ namespace FitnessTracker.Data.Handlers.Users
             _ctx = ctx;
             _logger = logger;
         }
-        public Task<UserResponse> Handle(CreateUserRequest request, CancellationToken cancellationToken)
+        public Task<RequestResult<UserResponse>> Handle(CreateUserRequest request, CancellationToken cancellationToken)
         {            
             try
             {
@@ -29,8 +30,7 @@ namespace FitnessTracker.Data.Handlers.Users
                 var existingUser = _ctx.Users.FirstOrDefault(x => x.Email == request.Email);
                 if (existingUser != null)
                 {
-                    // TODO is this the right thing to be returning for failures?
-                    return Task.FromResult<UserResponse>(null);
+                   return Task.FromResult(RequestResult.Error<UserResponse>());
                 }
                 var user = new User
                 {
@@ -48,7 +48,7 @@ namespace FitnessTracker.Data.Handlers.Users
                 if (createdUser == null)
                 {
                     _logger.LogError("user not found after creation");
-                    return Task.FromResult<UserResponse>(null); 
+                    return Task.FromResult(RequestResult.Error<UserResponse>()); 
                 }
 
                 var response = new UserResponse
@@ -62,12 +62,12 @@ namespace FitnessTracker.Data.Handlers.Users
                     UserProfile = user.UserProfile
                 };
 
-                return Task.FromResult(response);
+                return Task.FromResult(RequestResult.Success(response));
             }
             catch (Exception ex)
             {
                 _logger.LogError("Error creating user", ex);
-                return Task.FromResult<UserResponse>(null);
+                return Task.FromResult(RequestResult.Error<UserResponse>());
             }
 
         }
