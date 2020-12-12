@@ -10,8 +10,7 @@ namespace FitnessTracker.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    // TODO password in create user and also change password
-    // TODO unit tests for this and handlers
+
     public class UserController : ControllerBase
     {
         private readonly IMediator _mediator;

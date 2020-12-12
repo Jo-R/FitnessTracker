@@ -38,7 +38,8 @@ namespace FitnessTracker.Data.Handlers.Users
                     LastName = request.LastName,
                     DateOfBirth = request.DateOfBirth,
                     Email = request.Email,
-                    PhoneNumber = request.PhoneNumber
+                    PhoneNumber = request.PhoneNumber,
+                    Active = true
                 };
                 _ctx.Users.Add(user);
                 _ctx.SaveChanges();

@@ -4,14 +4,16 @@ using FitnessTracker.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FitnessTracker.Data.Migrations
 {
     [DbContext(typeof(FitnessTrackerContext))]
-    partial class FitnessTrackerContextModelSnapshot : ModelSnapshot
+    [Migration("20201212083024_ActivityDataTypes")]
+    partial class ActivityDataTypes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,19 +23,18 @@ namespace FitnessTracker.Data.Migrations
 
             modelBuilder.Entity("FitnessTracker.Data.Models.RunActivity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("AverageHr")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("AveragePaceMile")
-                        .HasColumnType("time");
+                    b.Property<double>("AveragePaceMile")
+                        .HasColumnType("float");
 
-                    b.Property<DateTimeOffset>("Date")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
                     b.Property<double>("DistanceMile")
                         .HasColumnType("float");
@@ -66,11 +67,8 @@ namespace FitnessTracker.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset>("DateOfBirth")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(450)");

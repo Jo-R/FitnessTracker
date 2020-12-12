@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using MediatR;
 using FitnessTracker.Data.Handlers.Users;
+using FitnessTracker.Api.Converters;
 
 namespace FitnessTracker.Api
 {
@@ -24,11 +25,15 @@ namespace FitnessTracker.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers()
+             .AddJsonOptions(options =>
+                options.JsonSerializerOptions.Converters.Add(new TimeSpanToStringConverter()));
             services.AddDbContext<FitnessTrackerContext>(options =>
                  options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             // load the assembley where the mediatr handlers live so they get registered with container
             services.AddMediatR(typeof(CreateUserHandler).Assembly);
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

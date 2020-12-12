@@ -13,7 +13,7 @@ namespace FitnessTracker.Data.Models.Requests.Users
         [Required]
         public string LastName { get; set; }
         [Required]
-        public DateTime DateOfBirth { get; set; }
+        public DateTimeOffset DateOfBirth { get; set; }
         [EmailAddress]
         [Required]
         public string Email { get; set; }
