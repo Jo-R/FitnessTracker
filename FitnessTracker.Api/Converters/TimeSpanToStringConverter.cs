@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace FitnessTracker.Api.Converters
 {
+    /// <summary>
+    /// .Net core 3 json serialiser does not support timespan ootb
+    /// </summary>
     public class TimeSpanToStringConverter : JsonConverter<TimeSpan>
     {
         public override TimeSpan Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)

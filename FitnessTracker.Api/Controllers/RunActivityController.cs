@@ -14,9 +14,7 @@ namespace FitnessTracker.Api.Controllers
     [Route("api/[controller]")]
     // TODO get all activities (paged - maybe a summary?)
     // TODO get activity by id
-    // TODO add activity
-    // TODO  delete activity
-    // TODO put (update) activity
+
     public class RunActivityController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -24,6 +22,22 @@ namespace FitnessTracker.Api.Controllers
         public RunActivityController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RunActivityResponse))]
+        public async Task<IActionResult> GetUserById(int id)
+        {
+            var response = await _mediator.Send(new RunActivityByIdQuery { Id = id });
+
+            if (response.IsSuccess)
+            {
+                return Ok(response.Obj);
+            }
+
+            return NotFound();
         }
 
         [HttpPost]
