@@ -12,9 +12,10 @@ using FitnessTracker.Api.Converters;
 namespace FitnessTracker.Api
 {
 
-    // TODO swagger
     public class Startup
     {
+        // TODO SORT OUT CORS
+        readonly string allowedOrigins = "local";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -32,6 +33,16 @@ namespace FitnessTracker.Api
                  options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             // load the assembley where the mediatr handlers live so they get registered with container
             services.AddMediatR(typeof(CreateUserHandler).Assembly);
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: allowedOrigins,
+                                  builder =>
+                                  {
+                                      builder.WithOrigins("http://localhost:5000")
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod();
+                                  });
+            });
 
 
         }
@@ -47,6 +58,8 @@ namespace FitnessTracker.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(allowedOrigins);
 
             app.UseAuthorization();
 
