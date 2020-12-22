@@ -14,8 +14,8 @@ namespace FitnessTracker.Api
 
     public class Startup
     {
-        // TODO SORT OUT CORS
-        readonly string allowedOrigins = "local";
+
+        readonly string corsPolicy = "all";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -35,10 +35,9 @@ namespace FitnessTracker.Api
             services.AddMediatR(typeof(CreateUserHandler).Assembly);
             services.AddCors(options =>
             {
-                options.AddPolicy(name: allowedOrigins,
-                                  builder =>
+                options.AddPolicy(corsPolicy,  builder =>
                                   {
-                                      builder.WithOrigins("http://localhost:5000")
+                                      builder.AllowAnyOrigin()
                                       .AllowAnyHeader()
                                       .AllowAnyMethod();
                                   });
@@ -59,7 +58,7 @@ namespace FitnessTracker.Api
 
             app.UseRouting();
 
-            app.UseCors(allowedOrigins);
+            app.UseCors(corsPolicy);
 
             app.UseAuthorization();
 
