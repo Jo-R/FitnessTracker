@@ -2,6 +2,7 @@
 using FitnessTracker.Data.Models.Responses;
 using FitnessTracker.Data.Models.Responses.Users;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -23,26 +24,26 @@ namespace FitnessTracker.Data.Handlers.Users
             _logger = logger;
         }
 
-        public Task<RequestResult<UserResponse>> Handle(PatchUserProfileRequest request, CancellationToken cancellationToken)
+        public async Task<RequestResult<UserResponse>> Handle(PatchUserProfileRequest request, CancellationToken cancellationToken)
         {
             try
             {
-                var user = _ctx.Users.FirstOrDefault(x => x.Id == request.Id);
+                var user = await _ctx.Users.FirstOrDefaultAsync(x => x.Id == request.Id);
                 if (user == null)
                 {
                     _logger.LogError("user not found");
-                    return Task.FromResult(RequestResult.Error<UserResponse>());
+                    return RequestResult.Error<UserResponse>();
                 }
 
                 user.UserProfile = request.ProfileContent;
-                _ctx.SaveChanges();
+                await _ctx.SaveChangesAsync();
 
-                var updatedUser = _ctx.Users.FirstOrDefault(x => x.Id == request.Id);
+                var updatedUser = await _ctx.Users.FirstOrDefaultAsync(x => x.Id == request.Id);
 
                 if (updatedUser == null)
                 {
                     _logger.LogError("user not found after update");
-                    return Task.FromResult(RequestResult.Error<UserResponse>());
+                    return RequestResult.Error<UserResponse>();
                 }
 
                 var response = new UserResponse
@@ -56,12 +57,12 @@ namespace FitnessTracker.Data.Handlers.Users
                     UserProfile = updatedUser.UserProfile
                 };
 
-                return Task.FromResult(RequestResult.Success(response));
+                return RequestResult.Success(response);
             }
             catch (Exception ex)
             {
                 _logger.LogError("Error updating user profile user", ex);
-                return Task.FromResult(RequestResult.Error<UserResponse>());
+                return RequestResult.Error<UserResponse>();
             }
         }
     }

@@ -1,16 +1,10 @@
-﻿using FitnessTracker.Data.Models.Responses;
-using FitnessTracker.Data.Models.Responses.RunActivity;
-using MediatR;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System;
 
-namespace FitnessTracker.Data.Models.Requests.RunActivity
+namespace FitnessTracker.Data.Models.Responses.RunActivities
 {
-    public class AddRunActivityRequest: IRequest<RequestResult<RunActivityResponse>>
+    public class RunActivityResponse
     {
-        [Required]
+        public int Id { get; set; }
         public Guid UserId { get; set; }
         public DateTimeOffset Date { get; set; }
         public string Title { get; set; }
@@ -20,5 +14,6 @@ namespace FitnessTracker.Data.Models.Requests.RunActivity
         public int MaxHr { get; set; }
         public TimeSpan AveragePaceMile { get; set; }
         public string Notes { get; set; }
+
     }
 }

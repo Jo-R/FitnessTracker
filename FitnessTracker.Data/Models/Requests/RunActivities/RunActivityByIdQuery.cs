@@ -1,11 +1,11 @@
 ﻿using FitnessTracker.Data.Models.Responses;
-using FitnessTracker.Data.Models.Responses.RunActivity;
+using FitnessTracker.Data.Models.Responses.RunActivities;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace FitnessTracker.Data.Models.Requests.RunActivity
+namespace FitnessTracker.Data.Models.Requests.RunActivities
 {
     public class RunActivityByIdQuery: IRequest<RequestResult<RunActivityResponse>>
     {

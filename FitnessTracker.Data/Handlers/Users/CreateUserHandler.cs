@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using FitnessTracker.Data.Models.Responses;
+using Microsoft.EntityFrameworkCore;
 
 namespace FitnessTracker.Data.Handlers.Users
 {
@@ -21,16 +22,15 @@ namespace FitnessTracker.Data.Handlers.Users
             _ctx = ctx;
             _logger = logger;
         }
-        public Task<RequestResult<UserResponse>> Handle(CreateUserRequest request, CancellationToken cancellationToken)
+        public async Task<RequestResult<UserResponse>> Handle(CreateUserRequest request, CancellationToken cancellationToken)
         {            
             try
             {
                 // can only have one user with an email address, enforced by db but fail fast here...
-                // TODO is this the right place to do this?
-                var existingUser = _ctx.Users.FirstOrDefault(x => x.Email == request.Email);
+                var existingUser = await _ctx.Users.FirstOrDefaultAsync(x => x.Email == request.Email);
                 if (existingUser != null)
                 {
-                   return Task.FromResult(RequestResult.Error<UserResponse>());
+                   return RequestResult.Error<UserResponse>();
                 }
                 var user = new User
                 {
@@ -41,15 +41,15 @@ namespace FitnessTracker.Data.Handlers.Users
                     PhoneNumber = request.PhoneNumber,
                     Active = true
                 };
-                _ctx.Users.Add(user);
-                _ctx.SaveChanges();
+                await _ctx.Users.AddAsync(user);
+                await _ctx.SaveChangesAsync();
 
-                var createdUser = _ctx.Users.FirstOrDefault(x => x.Email == request.Email);
+                var createdUser = await _ctx.Users.FirstOrDefaultAsync(x => x.Email == request.Email);
 
                 if (createdUser == null)
                 {
                     _logger.LogError("user not found after creation");
-                    return Task.FromResult(RequestResult.Error<UserResponse>()); 
+                    return RequestResult.Error<UserResponse>(); 
                 }
 
                 var response = new UserResponse
@@ -63,12 +63,12 @@ namespace FitnessTracker.Data.Handlers.Users
                     UserProfile = user.UserProfile
                 };
 
-                return Task.FromResult(RequestResult.Success(response));
+                return RequestResult.Success(response);
             }
             catch (Exception ex)
             {
                 _logger.LogError("Error creating user", ex);
-                return Task.FromResult(RequestResult.Error<UserResponse>());
+                return RequestResult.Error<UserResponse>();
             }
 
         }

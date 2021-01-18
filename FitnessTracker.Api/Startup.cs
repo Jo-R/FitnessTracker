@@ -33,6 +33,7 @@ namespace FitnessTracker.Api
                  options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             // load the assembley where the mediatr handlers live so they get registered with container
             services.AddMediatR(typeof(CreateUserHandler).Assembly);
+            // TODO all origins for now but might want to restrict
             services.AddCors(options =>
             {
                 options.AddPolicy(corsPolicy,  builder =>

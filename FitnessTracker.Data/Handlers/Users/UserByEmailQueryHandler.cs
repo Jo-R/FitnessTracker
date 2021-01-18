@@ -2,6 +2,7 @@
 using FitnessTracker.Data.Models.Responses;
 using FitnessTracker.Data.Models.Responses.Users;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -23,14 +24,14 @@ namespace FitnessTracker.Data.Handlers.Users
             _logger = logger;
         }
 
-        public Task<RequestResult<UserResponse>> Handle(UserByEmailQuery request, CancellationToken cancellationToken)
+        public async Task<RequestResult<UserResponse>> Handle(UserByEmailQuery request, CancellationToken cancellationToken)
         {
             try
             {
-                var user = _ctx.Users.FirstOrDefault(x => x.Email == request.Email);
+                var user = await _ctx.Users.FirstOrDefaultAsync(x => x.Email == request.Email);
                 if (user == null)
                 {
-                    return Task.FromResult(RequestResult.Error<UserResponse>());
+                    return RequestResult.Error<UserResponse>();
                 }
                 var response = new UserResponse
                 {
@@ -42,12 +43,12 @@ namespace FitnessTracker.Data.Handlers.Users
                     PhoneNumber = user.PhoneNumber,
                     UserProfile = user.UserProfile
                 };
-                return Task.FromResult(RequestResult.Success(response));
+                return RequestResult.Success(response);
             }
             catch (Exception ex)
             {
                 _logger.LogError("Error getting user", ex);
-                return Task.FromResult(RequestResult.Error<UserResponse>()); ;
+                return RequestResult.Error<UserResponse>();
             }
         }
     }

@@ -1,7 +1,8 @@
-﻿using FitnessTracker.Data.Models.Requests.RunActivity;
+﻿using FitnessTracker.Data.Models.Requests.RunActivities;
 using FitnessTracker.Data.Models.Responses;
-using FitnessTracker.Data.Models.Responses.RunActivity;
+using FitnessTracker.Data.Models.Responses.RunActivities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace FitnessTracker.Data.Handlers.RunActivitys
+namespace FitnessTracker.Data.Handlers.RunActivities
 {
     public class RunActivityByIdQueryHandler : IRequestHandler<RunActivityByIdQuery, RequestResult<RunActivityResponse>>
     {
@@ -23,14 +24,14 @@ namespace FitnessTracker.Data.Handlers.RunActivitys
             _logger = logger;
         }
 
-        public Task<RequestResult<RunActivityResponse>> Handle(RunActivityByIdQuery request, CancellationToken cancellationToken)
+        public async Task<RequestResult<RunActivityResponse>> Handle(RunActivityByIdQuery request, CancellationToken cancellationToken)
         {
             try
             {
-                var activity = _ctx.RunActivities.FirstOrDefault(x => x.Id == request.Id);
+                var activity = await _ctx.RunActivities.FirstOrDefaultAsync(x => x.Id == request.Id);
                 if (activity == null)
                 {
-                    return Task.FromResult(RequestResult.Error<RunActivityResponse>());
+                    return RequestResult.Error<RunActivityResponse>();
                 }
                 var response = new RunActivityResponse
                 {
@@ -46,12 +47,12 @@ namespace FitnessTracker.Data.Handlers.RunActivitys
                     Notes = activity.Notes,
 
                 };
-                return Task.FromResult(RequestResult.Success(response));
+                return RequestResult.Success(response);
             }
             catch (Exception ex)
             {
                 _logger.LogError("Error getting run activity", ex);
-                return Task.FromResult(RequestResult.Error<RunActivityResponse>()); ;
+                return RequestResult.Error<RunActivityResponse>(); ;
             }
         }
     }

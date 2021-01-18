@@ -1,7 +1,7 @@
-﻿using FitnessTracker.Data.Models.Requests.RunActivity;
+﻿using FitnessTracker.Data.Models.Requests.RunActivities;
 using FitnessTracker.Data.Models.Responses;
 using FitnessTracker.Data.Models;
-using FitnessTracker.Data.Models.Responses.RunActivity;
+using FitnessTracker.Data.Models.Responses.RunActivities;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
@@ -11,7 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 
-namespace FitnessTracker.Data.Handlers.RunActivitys
+namespace FitnessTracker.Data.Handlers.RunActivities
 {
     public class AddRunActivityHandler : IRequestHandler<AddRunActivityRequest, RequestResult<RunActivityResponse>>
     {
@@ -23,7 +23,7 @@ namespace FitnessTracker.Data.Handlers.RunActivitys
             _ctx = ctx;
             _logger = logger;
         }
-        public Task<RequestResult<RunActivityResponse>> Handle(AddRunActivityRequest request, CancellationToken cancellationToken)
+        public async Task<RequestResult<RunActivityResponse>> Handle(AddRunActivityRequest request, CancellationToken cancellationToken)
         {
             try
             {
@@ -39,15 +39,15 @@ namespace FitnessTracker.Data.Handlers.RunActivitys
                    AveragePaceMile = request.AveragePaceMile,
                    Notes = request.Notes
                 };
-                _ctx.RunActivities.Add(activity);
-                _ctx.SaveChanges();
+                await _ctx.RunActivities.AddAsync(activity);
+                await _ctx.SaveChangesAsync();
 
-                var createdActivity = _ctx.RunActivities.Find(activity.Id);
+                var createdActivity = await _ctx.RunActivities.FindAsync(activity.Id);
 
                 if (createdActivity == null)
                 {
                     _logger.LogError("activity not found after creation");
-                    return Task.FromResult(RequestResult.Error<RunActivityResponse>());
+                    return RequestResult.Error<RunActivityResponse>();
                 }
 
                 var response = new RunActivityResponse
@@ -64,12 +64,12 @@ namespace FitnessTracker.Data.Handlers.RunActivitys
                     Notes = createdActivity.Notes
                 };
 
-                return Task.FromResult(RequestResult.Success(response));
+                return RequestResult.Success(response);
             }
             catch (Exception ex)
             {
                 _logger.LogError("Error creating run activity", ex);
-                return Task.FromResult(RequestResult.Error<RunActivityResponse>());
+                return RequestResult.Error<RunActivityResponse>();
             }
         }
     }
