@@ -22,6 +22,11 @@ namespace FitnessTracker.Api.Controllers
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// Get an individual run activity using its ID
+        /// </summary>
+        /// <param name="id">The id of the activity</param>
+        /// <returns>A run activity response with all the run informatio</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -38,6 +43,13 @@ namespace FitnessTracker.Api.Controllers
             return NotFound();
         }
 
+        /// <summary>
+        /// Get all the run activities for a user (identified by their id). Can be paged.
+        /// </summary>
+        /// <param name="id">The user id to return the data for</param>
+        /// <param name="pageNumber">The page number (defaults 1)</param>
+        /// <param name="pageSize">The page size (defaults 50)</param>
+        /// <returns>A list of the user's run activities along with the page number/size and total items</returns>
         [HttpGet("user/{id}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -58,6 +70,11 @@ namespace FitnessTracker.Api.Controllers
             return BadRequest();
         }
 
+        /// <summary>
+        /// Add a runa ctivity for a user
+        /// </summary>
+        /// <param name="request">The activity details</param>
+        /// <returns>The activity details (including its ID)</returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RunActivityResponse))]

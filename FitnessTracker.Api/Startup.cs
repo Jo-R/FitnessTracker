@@ -43,7 +43,15 @@ namespace FitnessTracker.Api
                                       .AllowAnyMethod();
                                   });
             });
-
+            services.AddSwaggerDocument(config =>
+            {
+                config.PostProcess = document =>
+                {
+                    document.Info.Version = "v1";
+                    document.Info.Title = "Fitness Tracker Api";
+                    document.Info.Description = "For run tracking";
+                };
+            });
 
         }
 
@@ -67,6 +75,10 @@ namespace FitnessTracker.Api
             {
                 endpoints.MapControllers();
             });
+
+            // Register the Swagger generator and the Swagger UI middlewares
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
         }
     }
 }

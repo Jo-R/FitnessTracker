@@ -20,6 +20,11 @@ namespace FitnessTracker.Api.Controllers
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// Get a user by their ID
+        /// </summary>
+        /// <param name="id">The user id</param>
+        /// <returns>Details of the user</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -41,6 +46,11 @@ namespace FitnessTracker.Api.Controllers
             return NotFound();
         }
 
+        /// <summary>
+        /// Get a user by their email address
+        /// </summary>
+        /// <param name="email">The user's email address</param>
+        /// <returns>The details of the user</returns>
         [HttpGet("email/{email}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -62,6 +72,11 @@ namespace FitnessTracker.Api.Controllers
             return NotFound();
         }
         
+        /// <summary>
+        /// Add a user
+        /// </summary>
+        /// <param name="request">The user's details</param>
+        /// <returns>The user's details (including their ID)</returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponse))]
@@ -83,6 +98,11 @@ namespace FitnessTracker.Api.Controllers
            
         }
 
+        /// <summary>
+        /// Update a user's profile section
+        /// </summary>
+        /// <param name="request">The user id and the profile content</param>
+        /// <returns>The user's details</returns>
         [HttpPatch("user-profile")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponse))]
