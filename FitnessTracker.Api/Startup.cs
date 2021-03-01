@@ -6,8 +6,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using MediatR;
+using AutoMapper;
 using FitnessTracker.Data.Handlers.Users;
 using FitnessTracker.Api.Converters;
+using FitnessTracker.Data.Models.Mappings;
 
 namespace FitnessTracker.Api
 {
@@ -33,6 +35,8 @@ namespace FitnessTracker.Api
                  options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             // load the assembley where the mediatr handlers live so they get registered with container
             services.AddMediatR(typeof(CreateUserHandler).Assembly);
+            // same thing with automapper
+            services.AddAutoMapper(typeof(RunActivityProfile).Assembly);
             // TODO all origins for now but might want to restrict
             services.AddCors(options =>
             {

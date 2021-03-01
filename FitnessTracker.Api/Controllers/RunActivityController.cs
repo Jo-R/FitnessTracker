@@ -80,7 +80,7 @@ namespace FitnessTracker.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RunActivityResponse))]
         public async Task<IActionResult> AddActivity(AddRunActivityRequest request)
         {
-            if (request == null)
+            if (request == null || request.UserId == Guid.Empty)
             {
                 return BadRequest("The request cannot be null");
             }

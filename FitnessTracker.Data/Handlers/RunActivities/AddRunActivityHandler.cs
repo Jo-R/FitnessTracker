@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
+using AutoMapper;
 
 namespace FitnessTracker.Data.Handlers.RunActivities
 {
@@ -17,28 +18,23 @@ namespace FitnessTracker.Data.Handlers.RunActivities
     {
         private readonly FitnessTrackerContext _ctx;
         private readonly ILogger<AddRunActivityHandler> _logger;
+        private readonly IMapper _mapper;
 
-        public AddRunActivityHandler(FitnessTrackerContext ctx, ILogger<AddRunActivityHandler> logger)
+        public AddRunActivityHandler(
+            FitnessTrackerContext ctx, 
+            ILogger<AddRunActivityHandler> logger,
+            IMapper mapper
+         )
         {
             _ctx = ctx;
             _logger = logger;
+            _mapper = mapper;
         }
         public async Task<RequestResult<RunActivityResponse>> Handle(AddRunActivityRequest request, CancellationToken cancellationToken)
         {
             try
             {
-                var activity = new RunActivity
-                {
-                   UserId = request.UserId,
-                   Date = request.Date,
-                   Title = request.Title,
-                   DistanceMile = request.DistanceMile,
-                   Duration = request.Duration,
-                   AverageHr = request.AverageHr,
-                   MaxHr = request.MaxHr,
-                   AveragePaceMile = request.AveragePaceMile,
-                   Notes = request.Notes
-                };
+                var activity = _mapper.Map<RunActivity>(request);
                 await _ctx.RunActivities.AddAsync(activity);
                 await _ctx.SaveChangesAsync();
 
@@ -50,19 +46,7 @@ namespace FitnessTracker.Data.Handlers.RunActivities
                     return RequestResult.Error<RunActivityResponse>();
                 }
 
-                var response = new RunActivityResponse
-                {
-                    Id = createdActivity.Id,
-                    UserId = createdActivity.UserId,
-                    Date = createdActivity.Date,
-                    Title = createdActivity.Title,
-                    DistanceMile = createdActivity.DistanceMile,
-                    Duration = createdActivity.Duration,
-                    AverageHr = createdActivity.AverageHr,
-                    MaxHr = createdActivity.MaxHr,
-                    AveragePaceMile = createdActivity.AveragePaceMile,
-                    Notes = createdActivity.Notes
-                };
+                var response = _mapper.Map<RunActivityResponse>(createdActivity);
 
                 return RequestResult.Success(response);
             }

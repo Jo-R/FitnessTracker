@@ -5,10 +5,10 @@ using MediatR;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Linq;
 using Microsoft.Extensions.Logging;
 using FitnessTracker.Data.Models.Responses;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace FitnessTracker.Data.Handlers.Users
 {
@@ -16,11 +16,17 @@ namespace FitnessTracker.Data.Handlers.Users
     {
         private readonly FitnessTrackerContext _ctx;
         private readonly ILogger<CreateUserHandler> _logger;
+        private readonly IMapper _mapper;
 
-        public CreateUserHandler(FitnessTrackerContext ctx, ILogger<CreateUserHandler> logger)
+        public CreateUserHandler(
+            FitnessTrackerContext ctx, 
+            ILogger<CreateUserHandler> logger,
+            IMapper mapper
+        )
         {
             _ctx = ctx;
             _logger = logger;
+            _mapper = mapper;
         }
         public async Task<RequestResult<UserResponse>> Handle(CreateUserRequest request, CancellationToken cancellationToken)
         {            
@@ -32,15 +38,8 @@ namespace FitnessTracker.Data.Handlers.Users
                 {
                    return RequestResult.Error<UserResponse>();
                 }
-                var user = new User
-                {
-                    FirstName = request.FirstName,
-                    LastName = request.LastName,
-                    DateOfBirth = request.DateOfBirth,
-                    Email = request.Email,
-                    PhoneNumber = request.PhoneNumber,
-                    Active = true
-                };
+                var user = _mapper.Map<User>(request);
+                user.Active = true;
                 await _ctx.Users.AddAsync(user);
                 await _ctx.SaveChangesAsync();
 
@@ -52,16 +51,7 @@ namespace FitnessTracker.Data.Handlers.Users
                     return RequestResult.Error<UserResponse>(); 
                 }
 
-                var response = new UserResponse
-                {
-                    Id = user.Id,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Email = user.Email,
-                    DateOfBirth = user.DateOfBirth,
-                    PhoneNumber = user.PhoneNumber,
-                    UserProfile = user.UserProfile
-                };
+                var response = _mapper.Map<UserResponse>(createdUser);
 
                 return RequestResult.Success(response);
             }

@@ -1,4 +1,5 @@
-﻿using FitnessTracker.Data.Models.Requests.Users;
+﻿using AutoMapper;
+using FitnessTracker.Data.Models.Requests.Users;
 using FitnessTracker.Data.Models.Responses;
 using FitnessTracker.Data.Models.Responses.Users;
 using MediatR;
@@ -17,11 +18,17 @@ namespace FitnessTracker.Data.Handlers.Users
     {
         private readonly FitnessTrackerContext _ctx;
         private readonly ILogger<UserByIdQueryHandler> _logger;
+        private readonly IMapper _mapper;
 
-        public UserByIdQueryHandler(FitnessTrackerContext ctx, ILogger<UserByIdQueryHandler> logger)
+        public UserByIdQueryHandler(
+            FitnessTrackerContext ctx, 
+            ILogger<UserByIdQueryHandler> logger,
+            IMapper mapper
+         )
         {
             _ctx = ctx;
             _logger = logger;
+            _mapper = mapper;
         }
 
         public async Task<RequestResult<UserResponse>> Handle(UserByIdQuery request, CancellationToken cancellationToken)
@@ -33,16 +40,7 @@ namespace FitnessTracker.Data.Handlers.Users
                 {
                     return RequestResult.Error<UserResponse>();
                 }
-                var response = new UserResponse
-                {
-                    Id = user.Id,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Email = user.Email,
-                    DateOfBirth = user.DateOfBirth,
-                    PhoneNumber = user.PhoneNumber,
-                    UserProfile = user.UserProfile
-                };
+                var response = _mapper.Map<UserResponse>(user);
                 return RequestResult.Success(response);
             }
             catch (Exception ex)

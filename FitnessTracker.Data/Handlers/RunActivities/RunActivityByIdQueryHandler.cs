@@ -1,12 +1,11 @@
-﻿using FitnessTracker.Data.Models.Requests.RunActivities;
+﻿using AutoMapper;
+using FitnessTracker.Data.Models.Requests.RunActivities;
 using FitnessTracker.Data.Models.Responses;
 using FitnessTracker.Data.Models.Responses.RunActivities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,11 +16,17 @@ namespace FitnessTracker.Data.Handlers.RunActivities
     {
         private readonly FitnessTrackerContext _ctx;
         private readonly ILogger<RunActivityByIdQueryHandler> _logger;
+        private readonly IMapper _mapper;
 
-        public RunActivityByIdQueryHandler(FitnessTrackerContext ctx, ILogger<RunActivityByIdQueryHandler> logger)
+        public RunActivityByIdQueryHandler(
+            FitnessTrackerContext ctx, 
+            ILogger<RunActivityByIdQueryHandler> logger,
+            IMapper mapper
+        )
         {
             _ctx = ctx;
             _logger = logger;
+            _mapper = mapper;
         }
 
         public async Task<RequestResult<RunActivityResponse>> Handle(RunActivityByIdQuery request, CancellationToken cancellationToken)
@@ -33,20 +38,7 @@ namespace FitnessTracker.Data.Handlers.RunActivities
                 {
                     return RequestResult.Error<RunActivityResponse>();
                 }
-                var response = new RunActivityResponse
-                {
-                    Id = activity.Id,
-                    UserId = activity.UserId,
-                    Date = activity.Date,
-                    Title = activity.Title,
-                    DistanceMile = activity.DistanceMile,
-                    Duration = activity.Duration,
-                    AverageHr = activity.AverageHr,
-                    MaxHr = activity.MaxHr,
-                    AveragePaceMile = activity.AveragePaceMile,
-                    Notes = activity.Notes,
-
-                };
+                var response = _mapper.Map<RunActivityResponse>(activity);
                 return RequestResult.Success(response);
             }
             catch (Exception ex)
